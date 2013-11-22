@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+# force xdg-open to use pacmanfm to open the associated apps
+# e.g. Chromium dependon xdg-open
+export DESKTOP_SESSION="KDE"
+
+# to get automount workin
+if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+    eval "$(dbus-launch --sh-syntax --exit-with-session)"
+fi
+
+# The following variable defines the session which is started if the user doesn't explicitly select a session
+DEFAULT_SESSION=XFunky
+
+case $1 in
+openbox)
+	exec ck-launch-session dbus-launch openbox-session
+	;;
+xmonad)
+        exec ck-launch-session dbus-launch --auto-syntax --exit-with-session XFunky
+	;;
+*)
+	exec ck-launch-session dbus-launch --auto-syntax --exit-with-session $DEFAULT_SESSION
+	;;
+esac
+
+
+VBoxClient-all

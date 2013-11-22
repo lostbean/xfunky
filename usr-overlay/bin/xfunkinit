@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Start a process if it isn't already running
+# Use: runner "command_name" "command_args"
+runner () {
+    prc=$(ps -A | grep "$1")
+    if [ $? -eq 0  ]; then
+        msg "$1: There is a process already runnig with PID(s): \n $prc"
+    else
+        $("$1" $2) &
+        if [ $? -eq 0 ]; then
+            msg "$1: Starting process with PID: $!"
+        else
+            msg_error "Couldn't start $1."
+        fi
+    fi
+}
+
+msg () {
+echo -e "[XFunky] "$1
+}
+
+msg_error () {
+echo -e '|!|[XFunky Error: '$1
+}
+
+export -f runner
+export -f msg
+export -f msg_error
+
+
+msg 'Starting services for XFunky ...'
+
+for file in $(find "$HOME/.xfunky" -name "*.conf"); do
+    bash "$file"
+done
+
+msg 'Done!'

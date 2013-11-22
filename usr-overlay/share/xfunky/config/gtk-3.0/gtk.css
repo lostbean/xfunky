@@ -1,0 +1,24 @@
+/* Fallback Mode Panel */
+/* Fix background color (needed in Ubuntu 11.10 Oneiric Ocelot). */
+/* Based on /usr/share/themes/Ambiance/gtk-3.0/apps/gnome-panel.css. */
+
+PanelWidget,
+PanelApplet,
+PanelToplevel {
+    background-color: @dark_bg_color;
+    background-image: none;
+}
+
+.gnome-panel-menu-bar,
+PanelApplet > GtkMenuBar.menubar,
+PanelApplet > GtkMenuBar.menubar.menuitem,
+PanelMenuBar.menubar,
+PanelMenuBar.menubar.menuitem {
+    background-color: @dark_bg_color;
+    background-image: none;
+}
+
+PanelAppletFrame {
+    background-color: @dark_bg_color;
+    background-image: none;
+}
