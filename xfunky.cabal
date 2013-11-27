@@ -21,7 +21,7 @@ data-dir:       usr-overlay
 data-Files:
      bin/xfunkinit
      bin/kwintoxmd
-     share/kde4/apps/ksmserver/windowmanagers/xfunky.desktop
+     share/apps/ksmserver/windowmanagers/xfunky.desktop
      share/applications/xfunky.desktop
 
 Executable xfunky
