@@ -84,7 +84,6 @@ main = do
   replace
   --logpipe <- spawnPipe "xmobar"
   logpipe <- getDBusClient
-  spawn  "xfunkinit"
   xmonad $ kde4Config
         { modMask            = modm
         , startupHook        = setWMName "LG3D" <+> startupHook kde4Config
