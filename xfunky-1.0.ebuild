@@ -24,11 +24,11 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	>=dev-lang/ghc-6.12.1
 	>=x11-wm/xmonad-0.10
-    >=x11-wm/xmonad-contrib-0.10
-    dev-haskell/containers
+	>=x11-wm/xmonad-contrib-0.10
+	dev-haskell/containers
 	dev-haskell/process
 	>=dev-haskell/utf8-string-0.3
-	>=dev0haskell/dbus-0.10
+	>=dev-haskell/dbus-0.10
 	>=dev-haskell/cabal-1.8.0.2"
 
 CABAL_EXTRA_CONFIGURE_FLAGS=" --datadir=/usr --datasubdir="
