@@ -232,7 +232,7 @@ myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf = M.fromList $
     [
       -- Lauch applications
-      ((modm                  , xK_a      ), spawn "google-chrome")
+      ((modm                  , xK_a      ), spawn "google-chrome-stable")
     , ((modm                  , xK_z      ), spawn "emacs")
     , ((modm .|. shiftMask    , xK_z      ), spawn "kate")
     , ((modm                  , xK_s      ), spawn "systemsettings")
