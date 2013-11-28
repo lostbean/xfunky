@@ -6,32 +6,30 @@ license:        GPL-3
 license-file:   LICENSE
 maintainer:     Edgar Gomes de Araujo
 stability:      experimental
-homepage:
-package-url:
+homepage:       https://github.com/lostbean/xfunky
+package-url:    https://github.com/lostbean/xfunky
 bug-reports:    talktoedgar@gmail.com
-synopsis:       Custom xmonad windows manager 
+synopsis:       Custom xmonad windows manager
 description: Custom windows manager based on XMonad
   - Tiling windows management
   - Shortcuts to main apps
   - Integration with conky and xmobar
-  - Initialization script for services and background process (trayer, wicd, ...) 
 category:       X11
 author:         Edgar Gomes de Araujo
+
 data-dir:       usr-overlay
 data-Files:
-     bin/xfunkinit
      bin/kwintoxmd
      share/apps/ksmserver/windowmanagers/xfunky.desktop
      share/applications/xfunky.desktop
 
 Executable xfunky
-  Main-is:       xfunky.hs 
-
-
-  Build-Depends: base           >= 3 && < 5
+  main-is:       xfunky.hs
+  ghc-options:   -Wall -O2 -rtsopts
+  build-depends: base           >= 3 && < 5
                , xmonad         >= 0.10
                , xmonad-contrib >= 0.10
-               , containers
-               , process
                , dbus           >= 0.10
                , utf8-string    >= 0.3
+               , containers
+               , process
