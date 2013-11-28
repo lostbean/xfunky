@@ -1,26 +1,31 @@
+XFunky
+=====
+
+Tiling windows manager for KDE4 based on XMonad.
+
 Dual Head Config
-================
+----------------
 
 Use either twinview (NVidia) or Xrandr. If you are using Xrandr then Xinerama (libXinerama) should be available.
 
 Build Tips (Debian)
-==================
+-------------------
 
 Use the command "debuild -us -uc" to build and pack the debian package [http://wiki.debian.org/IntroDebianPackaging]
 Compiling without xinerama will make xmonad see the dual head screen as one big screen (extended mode).
 
 Building Tips (Gentoo)
-=====================
+----------------------
 
 Run to command "ebuild xfunky-1.0.ebuild manifest clean package" where the ".ebuild" is to test the package e run "ebuild xfunky-1.0.ebuild manifest clean merge" for installing.
 
 Configutarion for KDE4
-======================
+----------------------
 
 You should choose "XFunky" as window manager in: System Settings -> Default Applications -> Window Manager
 
 Configutarion for Gnome-3.x (old version)
-=========================================
+-----------------------------------------
 
 Using gnome-tweak-tool, set off the desktop managment by the file manager in order to focus the Workspace whenever the mouse moves to an empty one.
 Also:
