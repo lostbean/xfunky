@@ -14,9 +14,7 @@ import           XMonad.Actions.RotSlaves
 import           XMonad.Actions.UpdateFocus
 
 import           XMonad.Hooks.CurrentWorkspaceOnTop
-import           XMonad.Layout.BorderResize
 import           XMonad.Layout.BoringWindows
-import           XMonad.Layout.ButtonDecoration
 import           XMonad.Layout.Decoration
 import           XMonad.Layout.DecorationAddons
 import           XMonad.Layout.DraggingVisualizer
@@ -30,13 +28,10 @@ import           XMonad.Layout.MultiToggle
 import           XMonad.Layout.Named
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.PerWorkspace
-import           XMonad.Layout.PositionStoreFloat
 import           XMonad.Layout.Reflect
 import           XMonad.Layout.Tabbed
 import           XMonad.Layout.WindowSwitcherDecoration
 
-import           XMonad.Config.Desktop
-import           XMonad.Config.Gnome
 import           XMonad.Config.Kde
 
 import           XMonad.Hooks.DynamicLog
@@ -46,39 +41,34 @@ import           XMonad.Hooks.InsertPosition
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
-import           XMonad.Hooks.Place
 import           XMonad.Hooks.PositionStoreHooks
 import           XMonad.Hooks.SetWMName
 import           XMonad.Hooks.ToggleHook
 import           XMonad.Hooks.WorkspaceByPos
 
-import           XMonad.Util.EZConfig
 import           XMonad.Util.Font
 import           XMonad.Util.Replace
-import           XMonad.Util.Run                        (spawnPipe)
 import           XMonad.Util.WindowProperties
 
 import qualified XMonad.StackSet                        as S
 
-import           Control.Concurrent
-import           Control.Monad                          (liftM, liftM2, when)
-import           Control.Applicative                    ((<$>), (<|>))
-import           Data.List                              (find, isSuffixOf, union)
-import           Data.Maybe                             (isJust)
+import           Control.Monad                          (liftM2)
+import           Control.Applicative                    ((<$>))
+import           Data.List                              (find, union)
 import           Foreign.C.Types                        (CInt)
 
-import           Data.Monoid
-import           System.Cmd
 import           System.Exit
-import           System.IO
+
+--Uncomment when using xmobar.
+--import           System.IO
 
 import qualified Codec.Binary.UTF8.String               as UTF8
 import qualified Data.Map                               as M
 import qualified DBus                                   as D
 import qualified DBus.Client                            as D
 
-import           Debug.Trace
-dbg t a = Debug.Trace.trace (t ++ " -> " ++ (show $ map S.stack $ S.workspaces a)) a
+--import           Debug.Trace
+--dbg t a = Debug.Trace.trace (t ++ " -> " ++ (show $ map S.stack $ S.workspaces a)) a
 
 main = do
   replace
@@ -375,12 +365,12 @@ findWinOnTag px py wid tag = withDisplay $ \d -> do
   was  <- mapM (io . getWindowAttributes d) wins
   let
     pairs  = zip was wins
-    isInWin px py wa = let
+    isInWin mx my wa = let
       x1 = wa_x wa
       x2 = x1 + wa_width wa
       y1 = wa_y wa
       y2 = y1 + wa_height wa
-      in px > x1 && px < x2 && py > y1 && py < y2
+      in mx > x1 && mx < x2 && my > y1 && my < y2
     target = find (\(wa, w) -> w /= wid && isInWin px py wa) pairs
   return (snd <$> target)
 
@@ -445,6 +435,7 @@ myPPLayout x
 -- ============================== PrettyPrinter for Xmobar ===============================
 
 -- Assuming bg of the xmobar = #3C3B37
+{--
 myLogPPXmobar xmproc = dynamicLogWithPP $ xmobarPP
     { ppOutput  = hPutStrLn xmproc
     , ppTitle   = (\_ -> "") -- xmobarColor "#30DFAA" "" . shorten 50
@@ -454,6 +445,7 @@ myLogPPXmobar xmproc = dynamicLogWithPP $ xmobarPP
     , ppVisible = xmobarColor "yellow"  "" . wrap "(" ")"
     , ppLayout  = xmobarColor "#DF30BB" "" . wrap "" "" . myPPLayout
     }
+--}
 
 -- ======================= PrettyPrinter for DBus (xmonad log appelet) ===================
 
@@ -479,13 +471,12 @@ getDBusClient = do
   return dbus
 
 getWellKnownName :: D.Client -> IO ()
-getWellKnownName dbus = do
-  D.requestName dbus (D.busName_ "org.xmonad.Log")
-    [ D.nameAllowReplacement
-    , D.nameReplaceExisting
-    , D.nameDoNotQueue
-    ]
-  return ()
+getWellKnownName dbus = x >> return ()
+  where x = D.requestName dbus (D.busName_ "org.xmonad.Log")
+            [ D.nameAllowReplacement
+            , D.nameReplaceExisting
+            , D.nameDoNotQueue
+            ]
 
 dbusOutput :: D.Client -> String -> IO ()
 dbusOutput dbus str = do
