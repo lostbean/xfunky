@@ -106,7 +106,6 @@ main = do
         , borderWidth        = 2
         }
 
-
 -- Main key
 modm = mod4Mask
 
@@ -161,14 +160,13 @@ myManageHook = composeAll $
     fullFloats     = []
     floats         = ["awn-applet", "synapse", "mate-control-center"]
     webApps        = ["Firefox", "Chromium", "Google-chrome"] -- open on desktop 1
-    mailApps       = ["Thunderbird"]                          -- open on desktop 2
+    mailApps       = ["Thunderbird", "Kmail"]                 -- open on desktop 2
     mediaApps      = ["MPlayer", "Vlc"]                       -- open on desktop 3
     devApps        = []                                       -- open on desktop 4
     gimpApps       = ["Gimp-2.8", "gimp-toolbox", "gimp-dock", "gimp-image-window"] --on 8
     -- Be careful [] is different from [""], which might catch some unwanted windows ...
     ignoredApps    = []
     kde            = ["plasma-desktop", "Plasma-desktop", "plasma", "Plasma", "krunner", "klipper"]
-
 
 -- ===================================== Layout Hook =====================================
 
@@ -249,11 +247,11 @@ myKeys conf = M.fromList $
     , ((modm                  , xK_z      ), spawn "emacs")
     , ((modm .|. shiftMask    , xK_z      ), spawn "kate")
     , ((modm                  , xK_s      ), spawn "systemsettings")
-    , ((modm                  , xK_u      ), spawn "unison-gtk")
-    , ((modm                  , xK_m      ), spawn "thunderbird")
+    , ((modm                  , xK_u      ), spawn "unison-2.40")
+    , ((modm                  , xK_m      ), spawn "kmail")
     , ((modm                  , xK_f      ), spawn "dolphin")
     , ((modm                  , xK_t      ), spawn $ XMonad.terminal conf)
-    , ((modm .|. mod1Mask     , xK_o      ), restart "obtoxmd" True)
+    , ((modm .|. mod1Mask     , xK_o      ), restart "kwintoxmd" True)
       -- Basic CycleWS setup
     , ((modm .|. mod1Mask     , xK_Right  ), nextScreen)
     , ((modm .|. mod1Mask     , xK_Left   ), prevScreen)
