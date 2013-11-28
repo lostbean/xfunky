@@ -17,7 +17,7 @@ Compiling without xinerama will make xmonad see the dual head screen as one big 
 Building Tips (Gentoo)
 ----------------------
 
-Run to command "ebuild xfunky-1.0.ebuild manifest clean package" where the ".ebuild" is to test the package e run "ebuild xfunky-1.0.ebuild manifest clean merge" for installing.
+Create a folder "/usr/local/portage/app-misc/xfunky/". Inside the folder run the command "ebuild xfunky-1.0.ebuild manifest clean package" where the ".ebuild" is to test the package or run "ebuild xfunky-1.0.ebuild manifest clean merge" for installing the package.
 
 Configutarion for KDE4
 ----------------------
