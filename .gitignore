@@ -1,0 +1,4 @@
+.cabal-sandbox/
+debian/xfunky/
+Manifest
+*.pkg.tar.xz
