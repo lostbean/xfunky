@@ -17,7 +17,8 @@ install:
 	echo "Installing XFunky..."
 
 	echo "Updating cabal package list..."
-	$(CABAL) update || return 1
+	$(CABAL) update       || return 1
+	$(CABAL) sandbox init || return 1
 
 	## comment out the lines bellow if not using xmobar
 	#$(CABAL) install-deps xmobar || return 1
@@ -26,11 +27,3 @@ install:
 
 	$(CABAL) install --dependencies-only || return 1
 	$(CABAL) --datadir=$(ROOT) --datasubdir="" --prefix=$(ROOT)  install || return 1
-
-	chmod +x "$(ROOT)/bin/xfunkinit"
-
-
-
-
-
-

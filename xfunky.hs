@@ -49,6 +49,8 @@ import           XMonad.Hooks.WorkspaceByPos
 import           XMonad.Util.Font
 import           XMonad.Util.Replace
 import           XMonad.Util.WindowProperties
+import           XMonad.Util.Run
+import           XMonad.Util.WorkspaceCompare
 
 import qualified XMonad.StackSet                        as S
 
@@ -56,30 +58,33 @@ import           Control.Monad                          (liftM2)
 import           Control.Applicative                    ((<$>))
 import           Data.List                              (find, union)
 import           Foreign.C.Types                        (CInt)
+import           Graphics.X11.Xinerama
 
 import           System.Exit
+
+import qualified Data.Map                               as M
 
 --Uncomment when using xmobar.
 --import           System.IO
 
-import qualified Codec.Binary.UTF8.String               as UTF8
-import qualified Data.Map                               as M
-import qualified DBus                                   as D
-import qualified DBus.Client                            as D
+--Uncomment when using dbus.
+--import qualified Codec.Binary.UTF8.String               as UTF8
+--import qualified DBus                                   as D
+--import qualified DBus.Client                            as D
 
 --import           Debug.Trace
 --dbg t a = Debug.Trace.trace (t ++ " -> " ++ (show $ map S.stack $ S.workspaces a)) a
 
 main = do
   replace
-  --logpipe <- spawnPipe "xmobar"
-  logpipe <- getDBusClient
+  pipes <- spawnBars
+  --logpipe <- getDBusClient
   xmonad $ kde4Config
         { modMask            = modm
         , startupHook        = setWMName "LG3D" <+> startupHook kde4Config
         , manageHook         = manageHook kde4Config <+> myManageHook
         , layoutHook         = myLayoutHook
-        , logHook            = myLogHook logpipe
+        , logHook            = myLogHook pipes
         , handleEventHook    = handleEventHook kde4Config <+>
                                docksEventHook             <+>
                                focusOnMouseMove           <+>
@@ -98,7 +103,7 @@ main = do
 -- Main key
 modm = mod4Mask
 
-myWorkspaces = ["1:web","2:mail","3:media","4:code","5:code","6:code","7:others","8:gimp"]
+myWorkspaces = ["1:web","2:mail","3:code","4:code","5:code","6:docs","7:others","8:gimp"]
 
 -- ======================== Remove border from specific windows ==========================
 
@@ -134,28 +139,28 @@ myManageHook = composeAll $
     ] ++ concat
     [ [ (className =? x <||> title =? x <||> resource =? x) --> doFullFloat            | x <- fullFloats    ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doFloat                | x <- floats        ]
+    , [ (className =? x <||> title =? x <||> resource =? x) --> doCenterFloat          | x <- centralFloats ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doShiftAndGo "1:web"   | x <- webApps       ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doShiftAndGo "2:mail"  | x <- mailApps      ]
-    , [ (className =? x <||> title =? x <||> resource =? x) --> doShiftAndGo "3:media" | x <- mediaApps     ]
-    , [ (className =? x <||> title =? x <||> resource =? x) --> doShiftAndGo "4:code"  | x <- devApps       ]
     , [ (className =? x <||> role  =? x <||> resource =? x) --> doShiftAndGo "8:gimp"  | x <- gimpApps      ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doIgnore               | x <- ignoredApps   ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doFloat                | x <- kde           ]
+    , [ (role =? x)                                         --> doFloat                | x <- hangout       ]
     ]
   where
     role           = stringProperty "WM_WINDOW_ROLE"
     makeMaster     = insertPosition Master Newer
     doShiftAndGo   = doF . liftM2 (.) S.greedyView S.shift
-    fullFloats     = []
-    floats         = ["awn-applet", "synapse", "mate-control-center"]
-    webApps        = ["Firefox", "Chromium", "Google-chrome"] -- open on desktop 1
-    mailApps       = ["Thunderbird", "Kmail"]                 -- open on desktop 2
-    mediaApps      = ["MPlayer", "Vlc"]                       -- open on desktop 3
-    devApps        = []                                       -- open on desktop 4
-    gimpApps       = ["Gimp-2.8", "gimp-toolbox", "gimp-dock", "gimp-image-window"] --on 8
     -- Be careful [] is different from [""], which might catch some unwanted windows ...
-    ignoredApps    = []
+    centralFloats  = ["systemsettings"]
+    fullFloats     = []
+    floats         = []
+    hangout        = ["pop-up"]
+    webApps        = ["Firefox", "Chromium", "Google-chrome"]                       -- open on desktop 1
+    mailApps       = ["Thunderbird", "Kmail"]                                       -- open on desktop 2
+    gimpApps       = ["Gimp-2.8", "gimp-toolbox", "gimp-dock", "gimp-image-window"] -- open on desktop 8
     kde            = ["plasma-desktop", "Plasma-desktop", "plasma", "Plasma", "krunner", "klipper"]
+    ignoredApps    = []
 
 -- ===================================== Layout Hook =====================================
 
@@ -232,15 +237,15 @@ myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf = M.fromList $
     [
       -- Lauch applications
-      ((modm                  , xK_a      ), spawn "google-chrome-stable")
+      ((modm                  , xK_a      ), spawn "chromium")
     , ((modm                  , xK_z      ), spawn "emacs")
     , ((modm .|. shiftMask    , xK_z      ), spawn "kate")
     , ((modm                  , xK_s      ), spawn "systemsettings")
-    , ((modm                  , xK_u      ), spawn "unison-2.40")
-    , ((modm                  , xK_m      ), spawn "kmail")
+    , ((modm                  , xK_u      ), spawn "unison-gtk2")
+    , ((modm                  , xK_m      ), spawn "thunderbird")
     , ((modm                  , xK_f      ), spawn "dolphin")
     , ((modm                  , xK_t      ), spawn $ XMonad.terminal conf)
-    , ((modm .|. mod1Mask     , xK_o      ), restart "kwintoxmd" True)
+    , ((modm .|. mod1Mask     , xK_w      ), restart "kwintoxmd" True)
       -- Basic CycleWS setup
     , ((modm .|. mod1Mask     , xK_Right  ), nextScreen)
     , ((modm .|. mod1Mask     , xK_Left   ), prevScreen)
@@ -374,7 +379,6 @@ findWinOnTag px py wid tag = withDisplay $ \d -> do
     target = find (\(wa, w) -> w /= wid && isInWin px py wa) pairs
   return (snd <$> target)
 
-
 swapWin :: (Ord a, Eq a, Eq s, Eq i) => a -> a
         -> S.StackSet i l a s sd -> S.StackSet i l a s sd
 swapWin w1 w2 ss = case (S.findTag w1 ss, S.findTag w2 ss) of
@@ -411,11 +415,23 @@ swapMoveWindow w = whenX (isClient w) $ withDisplay $ \d -> do
 
 -- ====================================== Logging ========================================
 
-myLogHook logpipe = do
+spawnBars = do
+  dsp <- openDisplay ""
+  ss  <- xineramaQueryScreens dsp
+  closeDisplay dsp
+  let
+    foo = mapM (func . fromIntegral . xsi_screen_number)
+    func sid = do
+      logpipe <- spawnPipe $ "xmobar -x" ++ show sid
+      return (sid, logpipe)
+  maybe (return []) foo ss
+
+myLogHook pipes = do
   fadeInactiveCurrentWSLogHook 0.8
   currentWorkspaceOnTop
   ewmhDesktopsLogHook
-  myLogPPDBus logpipe
+  currentScreen <- withWindowSet (return . S.screen . S.current)
+  mapM_ (myLogPPXmobar currentScreen) pipes
 
 myPPLayout :: String -> String
 myPPLayout x
@@ -435,25 +451,28 @@ myPPLayout x
 -- ============================== PrettyPrinter for Xmobar ===============================
 
 -- Assuming bg of the xmobar = #3C3B37
-{--
-myLogPPXmobar xmproc = dynamicLogWithPP $ xmobarPP
-    { ppOutput  = hPutStrLn xmproc
+myLogPPXmobar (S currentSID) (sid, pipe) = let
+  setCurr = xmobarColor "yellow"  "" . wrap "[" "]"
+  setVisi = xmobarColor "#30BBDF" "" . wrap "(" ")"
+  in dynamicLogWithPP $ xmobarPP
+    { ppOutput  = hPutStrLn pipe
     , ppTitle   = (\_ -> "") -- xmobarColor "#30DFAA" "" . shorten 50
     , ppWsSep   = " | "
     , ppHidden  = xmobarColor "#DFAA30" ""
-    , ppCurrent = xmobarColor "#30BBDF" "" . wrap "[" "]"
-    , ppVisible = xmobarColor "yellow"  "" . wrap "(" ")"
+    , ppCurrent = if currentSID == sid then setCurr else setVisi
+    , ppVisible = setVisi
     , ppLayout  = xmobarColor "#DF30BB" "" . wrap "" "" . myPPLayout
+    , ppSort    = getSortByXineramaRule
     }
---}
 
 -- ======================= PrettyPrinter for DBus (xmonad log appelet) ===================
 
+{--
 myLogPPDBus :: D.Client -> X ()
 myLogPPDBus dbus = let
   pp = defaultPP
     { ppOutput   = dbusOutput dbus
-    , ppTitle    = pangoSanitize
+    , ppTitle    = const "" --pangoSanitize
     , ppWsSep    = " | "
     , ppCurrent  = pangoColor "#0091DC" . wrap "[" "]" . pangoSanitize
     , ppVisible  = pangoColor "#8D5397" . wrap "(" ")" . pangoSanitize
@@ -499,3 +518,4 @@ pangoSanitize = foldr sanitize ""
     sanitize '\"' xs = "&quot;" ++ xs
     sanitize '&'  xs = "&amp;" ++ xs
     sanitize x    xs = x:xs
+--}

@@ -21,6 +21,8 @@ data-dir:       usr-overlay
 data-Files:
      bin/kwintoxmd
      share/apps/ksmserver/windowmanagers/xfunky.desktop
+     -- For Gentoo
+     --share/kde4/apps/ksmserver/windowmanagers/xfunky.desktop
      share/applications/xfunky.desktop
 
 Executable xfunky
@@ -29,6 +31,7 @@ Executable xfunky
   build-depends: base           >= 3 && < 5
                , xmonad         >= 0.10
                , xmonad-contrib >= 0.10
+               , X11            >= 1.5
                , dbus           >= 0.10
                , utf8-string    >= 0.3
                , containers
