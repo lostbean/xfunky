@@ -157,7 +157,7 @@ myManageHook = composeAll $
     webApps        = ["firefox", "Chromium", "Google-chrome"]                       -- open on desktop 1
     codeApps       = ["code-oss", "kate"]                                           -- open on desktop 2
     gimpApps       = ["Gimp-2.8", "gimp-toolbox", "gimp-dock", "gimp-image-window"] -- open on desktop 8
-    kde            = ["plasma-desktop", "Plasma-desktop", "plasma", "Plasma", "plasmashell", "krunner", "klipper"]
+    kde            = ["plasma-desktop", "Plasma-desktop", "plasma", "Plasma", "krunner", "klipper"]
     ignoredApps    = []
 
 -- ===================================== Layout Hook =====================================
@@ -301,6 +301,9 @@ myKeys conf = M.fromList $
       -- quit, or restart
     , ((modm .|. mod1Mask     , xK_Escape ), io (exitWith ExitSuccess))
     , ((modm .|. mod1Mask     , xK_k      ), spawn "xkill")
+    
+    , ((modm .|. shiftMask    , xK_space  ), spawn "rofi -show run")
+    , ((modm                  , xK_space  ), spawn "rofi -show window")
 
     ]
     ++
