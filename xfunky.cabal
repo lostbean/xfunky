@@ -17,14 +17,6 @@ description: Custom windows manager based on XMonad
 category:       X11
 author:         Edgar Gomes de Araujo
 
-data-dir:       usr-overlay
-data-Files:
-     bin/kwintoxmd
-     share/apps/ksmserver/windowmanagers/xfunky.desktop
-     -- For Gentoo
-     --share/kde4/apps/ksmserver/windowmanagers/xfunky.desktop
-     share/applications/xfunky.desktop
-
 Executable xfunky
   main-is:       xfunky.hs
   ghc-options:   -Wall -O2 -rtsopts

@@ -103,7 +103,7 @@ main = do
 -- Main key
 modm = mod4Mask
 
-myWorkspaces = ["1:web","2:mail","3:code","4:code","5:code","6:docs","7:others","8:gimp"]
+myWorkspaces = ["1:web","2:code","3:code","4:code","5:code","6:docs","7:others","8:gimp"]
 
 -- ======================== Remove border from specific windows ==========================
 
@@ -141,11 +141,10 @@ myManageHook = composeAll $
     , [ (className =? x <||> title =? x <||> resource =? x) --> doFloat                | x <- floats        ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doCenterFloat          | x <- centralFloats ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doShiftAndGo "1:web"   | x <- webApps       ]
-    , [ (className =? x <||> title =? x <||> resource =? x) --> doShiftAndGo "2:mail"  | x <- mailApps      ]
+    , [ (className =? x <||> title =? x <||> resource =? x) --> doShiftAndGo "2:code"  | x <- codeApps      ]
     , [ (className =? x <||> role  =? x <||> resource =? x) --> doShiftAndGo "8:gimp"  | x <- gimpApps      ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doIgnore               | x <- ignoredApps   ]
     , [ (className =? x <||> title =? x <||> resource =? x) --> doFloat                | x <- kde           ]
-    , [ (role =? x)                                         --> doFloat                | x <- hangout       ]
     ]
   where
     role           = stringProperty "WM_WINDOW_ROLE"
@@ -155,11 +154,10 @@ myManageHook = composeAll $
     centralFloats  = ["systemsettings"]
     fullFloats     = []
     floats         = []
-    hangout        = ["pop-up"]
-    webApps        = ["Firefox", "Chromium", "Google-chrome"]                       -- open on desktop 1
-    mailApps       = ["Thunderbird", "Kmail"]                                       -- open on desktop 2
+    webApps        = ["firefox", "Chromium", "Google-chrome"]                       -- open on desktop 1
+    codeApps       = ["code-oss", "kate"]                                           -- open on desktop 2
     gimpApps       = ["Gimp-2.8", "gimp-toolbox", "gimp-dock", "gimp-image-window"] -- open on desktop 8
-    kde            = ["plasma-desktop", "Plasma-desktop", "plasma", "Plasma", "krunner", "klipper"]
+    kde            = ["plasma-desktop", "Plasma-desktop", "plasma", "Plasma", "plasmashell", "krunner", "klipper"]
     ignoredApps    = []
 
 -- ===================================== Layout Hook =====================================
@@ -237,12 +235,10 @@ myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf = M.fromList $
     [
       -- Lauch applications
-      ((modm                  , xK_a      ), spawn "chromium")
-    , ((modm                  , xK_z      ), spawn "emacs")
+      ((modm                  , xK_a      ), spawn "firefox")
+    , ((modm                  , xK_z      ), spawn "code-oss")
     , ((modm .|. shiftMask    , xK_z      ), spawn "kate")
     , ((modm                  , xK_s      ), spawn "systemsettings")
-    , ((modm                  , xK_u      ), spawn "unison-gtk2")
-    , ((modm                  , xK_m      ), spawn "thunderbird")
     , ((modm                  , xK_f      ), spawn "dolphin")
     , ((modm                  , xK_t      ), spawn $ XMonad.terminal conf)
     , ((modm .|. mod1Mask     , xK_w      ), restart "kwintoxmd" True)
@@ -288,8 +284,6 @@ myKeys conf = M.fromList $
       -- Maximizing
     , ((modm                  , xK_b      ), withFocused $ sendMessage . maximizeRestore)
       -- Minimizing
-    , ((modm                  , xK_n      ), withFocused minimizeWindow)
-    , ((modm .|. mod1Mask     , xK_n      ), sendMessage RestoreNextMinimizedWin)
       -- floating layer support. Push window back and forth into tiling
     , ((modm                  , xK_equal  ), withFocused $ windows . S.sink)
     , ((modm                  , xK_minus  ), withFocused float)

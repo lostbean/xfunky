@@ -1,2 +1,0 @@
-shlibs:Depends=libc6 (>= 2.15), libffi6 (>= 3.0.4), libgmp10, libx11-6, libxft2 (>> 2.1.1), libxinerama1, libxml2 (>= 2.7.4), libxrandr2 (>= 2:1.2.99.3)
-misc:Depends=

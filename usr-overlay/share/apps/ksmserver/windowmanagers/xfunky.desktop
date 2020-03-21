@@ -1,7 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Name=XFunky
-Comment=Highly configurable framework window manager
-Type=XSession
-Exec=xfunky
-TryExec=xfunky
