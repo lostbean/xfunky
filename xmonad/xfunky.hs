@@ -52,17 +52,18 @@ import           XMonad.Util.WindowProperties
 import           XMonad.Util.Run
 import           XMonad.Util.WorkspaceCompare
 
-import qualified XMonad.StackSet                        as S
+import qualified XMonad.StackSet       as S
 
-import           Control.Monad                          (liftM2)
-import           Control.Applicative                    ((<$>))
-import           Data.List                              (find, union)
-import           Foreign.C.Types                        (CInt)
+import           Control.Monad         (liftM2)
+import           Control.Applicative   ((<$>))
+import           Data.List             (find, union)
+import           Foreign.C.Types       (CInt)
+
 import           Graphics.X11.Xinerama
-
 import           System.Exit
 
-import qualified Data.Map                               as M
+import qualified Data.Map              as M
+
 
 --Uncomment when using xmobar.
 --import           System.IO
@@ -72,19 +73,16 @@ import qualified Data.Map                               as M
 --import qualified DBus                                   as D
 --import qualified DBus.Client                            as D
 
---import           Debug.Trace
---dbg t a = Debug.Trace.trace (t ++ " -> " ++ (show $ map S.stack $ S.workspaces a)) a
-
 main = do
   replace
-  pipes <- spawnBars
+  -- pipes <- spawnBars
   --logpipe <- getDBusClient
   xmonad $ kde4Config
         { modMask            = modm
         , startupHook        = setWMName "LG3D" <+> startupHook kde4Config
         , manageHook         = manageHook kde4Config <+> myManageHook
         , layoutHook         = myLayoutHook
-        , logHook            = myLogHook pipes
+        -- , logHook            = myLogHook pipes
         , handleEventHook    = handleEventHook kde4Config <+>
                                docksEventHook             <+>
                                focusOnMouseMove           <+>
