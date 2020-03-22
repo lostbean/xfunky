@@ -268,9 +268,9 @@ myKeys conf = M.fromList $
     , ((modm .|. mod1Mask     , xK_h      ), sendMessage $ JumpToLayout "HTiled")
     , ((modm .|. mod1Mask     , xK_a      ), sendMessage $ JumpToLayout "Floating")
       -- Rotate through the available layout algorithms
-    , ((modm                  , xK_space  ), sendMessage NextLayout)
+    , ((modm                  , xK_l      ), sendMessage NextLayout)
       -- Reset the layouts on the current workspace to default
-    , ((modm .|. mod1Mask     , xK_space  ), setLayout $ XMonad.layoutHook conf)
+    , ((modm .|. mod1Mask     , xK_l      ), setLayout $ XMonad.layoutHook conf)
       -- Move focus to the master window
     , ((modm .|. mod1Mask     , xK_m      ), windows S.focusMaster)
       -- Rotate slave windows
