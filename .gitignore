@@ -1,7 +1,3 @@
-.cabal-sandbox/
-debian/xfunky/
-Manifest
-*.pkg.tar.xz
 .stack-work/
 *.hi
 *.o
