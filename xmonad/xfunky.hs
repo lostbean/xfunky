@@ -75,14 +75,14 @@ import qualified Data.Map              as M
 
 main = do
   replace
-  -- pipes <- spawnBars
+  pipes <- spawnBars
   --logpipe <- getDBusClient
   xmonad $ kde4Config
         { modMask            = modm
         , startupHook        = setWMName "LG3D" <+> startupHook kde4Config
         , manageHook         = manageHook kde4Config <+> myManageHook
         , layoutHook         = myLayoutHook
-        -- , logHook            = myLogHook pipes
+        , logHook            = myLogHook pipes
         , handleEventHook    = handleEventHook kde4Config <+>
                                docksEventHook             <+>
                                focusOnMouseMove           <+>
@@ -148,13 +148,14 @@ myManageHook = composeAll $
     role           = stringProperty "WM_WINDOW_ROLE"
     makeMaster     = insertPosition Master Newer
     doShiftAndGo   = doF . liftM2 (.) S.greedyView S.shift
-    -- Be careful [] is different from [""], which might catch some unwanted windows ...
-    centralFloats  = ["systemsettings"]
+    -- Be careful [] is different from [""], which might catch some unwanted windows
+    -- Use "xprop | grep WM_CLASS" to find the class
+    centralFloats  = ["systemsettings5"]
     fullFloats     = []
     floats         = []
-    webApps        = ["firefox", "Chromium", "Google-chrome"]                       -- open on desktop 1
-    codeApps       = ["code-oss", "kate"]                                           -- open on desktop 2
-    gimpApps       = ["Gimp-2.8", "gimp-toolbox", "gimp-dock", "gimp-image-window"] -- open on desktop 8
+    webApps        = ["firefox"]          -- open on desktop 1
+    codeApps       = ["code-oss", "kate"] -- open on desktop 2
+    gimpApps       = ["Gimp", "gimp"]     -- open on desktop 8
     kde            = ["plasma-desktop", "Plasma-desktop", "plasma", "Plasma", "krunner", "klipper"]
     ignoredApps    = []
 
@@ -170,9 +171,9 @@ myLayoutHook = let
   fullscreen = named "Fullscreen" $ maximize $ smartBorders Full
   tabs       = tabbed shrinkText decoTheme
   gimp       = named "GIMP" $
-               withIM (0.15) (Role "gimp-toolbox") $
+               withIM (0.15) (Role "gimp-toolbox-1") $
                reflectHoriz $
-               withIM (0.15) (Role "gimp-dock")
+               withIM (0.15) (Role "gimp-dock-1")
                ( fullscreen |||
                  tabs       |||
                  grid       |||
@@ -236,7 +237,7 @@ myKeys conf = M.fromList $
       ((modm                  , xK_a      ), spawn "firefox")
     , ((modm                  , xK_z      ), spawn "code-oss")
     , ((modm .|. shiftMask    , xK_z      ), spawn "kate")
-    , ((modm                  , xK_s      ), spawn "systemsettings")
+    , ((modm                  , xK_s      ), spawn "systemsettings5")
     , ((modm                  , xK_f      ), spawn "dolphin")
     , ((modm                  , xK_t      ), spawn $ XMonad.terminal conf)
     , ((modm .|. mod1Mask     , xK_w      ), restart "kwintoxmd" True)
@@ -417,7 +418,8 @@ spawnBars = do
   let
     foo = mapM (func . fromIntegral . xsi_screen_number)
     func sid = do
-      logpipe <- spawnPipe $ "xmobar -x" ++ show sid
+      -- logpipe <- spawnPipe $ "xmobar -x" ++ show sid
+      logpipe <- spawnPipe $ "conky -c $HOME/.conky/conky.conf"
       return (sid, logpipe)
   maybe (return []) foo ss
 
