@@ -410,12 +410,11 @@ spawnBars = do
   ss  <- xineramaQueryScreens dsp
   closeDisplay dsp
   let
-    foo = mapM (func . fromIntegral . xsi_screen_number)
+    applyToScreens = mapM (func . fromIntegral . xsi_screen_number)
     func sid = do
-      -- logpipe <- spawnPipe $ "xmobar -x" ++ show sid
-      logpipe <- spawnPipe $ "conky -c $HOME/.conky/conky.conf"
-      return (sid, logpipe)
-  maybe (return []) foo ss
+      _ <- spawnPipe $ "$HOME/.xfunky/statusbar/bar.sh"
+      return sid
+  maybe (return []) applyToScreens ss
 
 -- ====================================== Logging ========================================
 
@@ -475,7 +474,6 @@ getWellKnownName dbus = x >> return ()
 
 dbusOutput :: D.Client -> String -> IO ()
 dbusOutput dbus str = do
-  putStrLn(str)
   let signal = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update") {
         D.signalBody = [D.toVariant str]
         }

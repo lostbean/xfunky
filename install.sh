@@ -2,8 +2,8 @@ chmod +x config/plasma-workspace/env/set_window_manager.sh
 mkdir -p $HOME/.config/plasma-workspace/env/
 ln -i -s $(pwd)/config/plasma-workspace/env/set_window_manager.sh $HOME/.config/plasma-workspace/env/set_window_manager.sh
 
-mkdir -p $HOME/.conky
-ln -i -s $(pwd)/conky/conky.conf $HOME/.conky/conky.conf
+mkdir -p $HOME/.xfunky
+ln -i -s $(pwd)/statusbar $HOME/.xfunky/statusbar
 
 cd xmonad
 stack install
