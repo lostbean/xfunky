@@ -62,27 +62,21 @@ import           Foreign.C.Types       (CInt)
 import           Graphics.X11.Xinerama
 import           System.Exit
 
-import qualified Data.Map              as M
-
-
---Uncomment when using xmobar.
---import           System.IO
-
---Uncomment when using dbus.
---import qualified Codec.Binary.UTF8.String               as UTF8
---import qualified DBus                                   as D
---import qualified DBus.Client                            as D
+import qualified Codec.Binary.UTF8.String as UTF8
+import qualified Data.Map                 as M
+import qualified DBus                     as D
+import qualified DBus.Client              as D
 
 main = do
   replace
   pipes <- spawnBars
-  --logpipe <- getDBusClient
+  logpipe <- getDBusClient
   xmonad $ kde4Config
         { modMask            = modm
         , startupHook        = setWMName "LG3D" <+> startupHook kde4Config
         , manageHook         = manageHook kde4Config <+> myManageHook
         , layoutHook         = myLayoutHook
-        , logHook            = myLogHook pipes
+        , logHook            = myLogHook logpipe
         , handleEventHook    = handleEventHook kde4Config <+>
                                docksEventHook             <+>
                                focusOnMouseMove           <+>
@@ -409,7 +403,7 @@ swapMoveWindow w = whenX (isClient w) $ withDisplay $ \d -> do
     mouseDrag (\ex ey -> io $ moveWindow d w (getx ex) (gety ey))
               (performWindowSwitching w)
 
--- ====================================== Logging ========================================
+-- ====================================== Conky ========================================
 
 spawnBars = do
   dsp <- openDisplay ""
@@ -423,12 +417,15 @@ spawnBars = do
       return (sid, logpipe)
   maybe (return []) foo ss
 
-myLogHook pipes = do
+-- ====================================== Logging ========================================
+
+myLogHook :: D.Client -> X ()
+myLogHook dbus = do
   fadeInactiveCurrentWSLogHook 0.8
   currentWorkspaceOnTop
   ewmhDesktopsLogHook
   currentScreen <- withWindowSet (return . S.screen . S.current)
-  mapM_ (myLogPPXmobar currentScreen) pipes
+  myLogPPDBus currentScreen dbus
 
 myPPLayout :: String -> String
 myPPLayout x
@@ -445,37 +442,19 @@ myPPLayout x
     isThis = flip elem fields
     fields = words x
 
--- ============================== PrettyPrinter for Xmobar ===============================
-
--- Assuming bg of the xmobar = #3C3B37
-myLogPPXmobar (S currentSID) (sid, pipe) = let
-  setCurr = xmobarColor "yellow"  "" . wrap "[" "]"
-  setVisi = xmobarColor "#30BBDF" "" . wrap "(" ")"
-  in dynamicLogWithPP $ xmobarPP
-    { ppOutput  = hPutStrLn pipe
-    , ppTitle   = (\_ -> "") -- xmobarColor "#30DFAA" "" . shorten 50
-    , ppWsSep   = " | "
-    , ppHidden  = xmobarColor "#DFAA30" ""
-    , ppCurrent = if currentSID == sid then setCurr else setVisi
-    , ppVisible = setVisi
-    , ppLayout  = xmobarColor "#DF30BB" "" . wrap "" "" . myPPLayout
-    , ppSort    = getSortByXineramaRule
-    }
-
 -- ======================= PrettyPrinter for DBus (xmonad log appelet) ===================
 
-{--
-myLogPPDBus :: D.Client -> X ()
-myLogPPDBus dbus = let
+myLogPPDBus :: ScreenId -> D.Client -> X ()
+myLogPPDBus (S currentSID) dbus = let
   pp = defaultPP
     { ppOutput   = dbusOutput dbus
-    , ppTitle    = const "" --pangoSanitize
+    , ppTitle    = const ""
     , ppWsSep    = " | "
-    , ppCurrent  = pangoColor "#0091DC" . wrap "[" "]" . pangoSanitize
-    , ppVisible  = pangoColor "#8D5397" . wrap "(" ")" . pangoSanitize
-    , ppHidden   = pangoColor "#757575"
-    , ppUrgent   = pangoColor "red"
-    , ppLayout   = pangoColor "#B63535" . wrap "" "" . myPPLayout
+    , ppCurrent  = wrap "[" "]"
+    , ppVisible  = wrap "(" ")"
+    , ppHidden   = id
+    , ppUrgent   = id
+    , ppLayout   = wrap "" "" . myPPLayout
     , ppSep      = " "
     }
   in dynamicLogWithPP pp
@@ -496,23 +475,8 @@ getWellKnownName dbus = x >> return ()
 
 dbusOutput :: D.Client -> String -> IO ()
 dbusOutput dbus str = do
+  putStrLn(str)
   let signal = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update") {
-        D.signalBody = [D.toVariant ((UTF8.decodeString str))]
+        D.signalBody = [D.toVariant str]
         }
   D.emit dbus signal
-
-pangoColor :: String -> String -> String
-pangoColor fg = wrap left right
-  where
-    left  = "<span foreground=\"" ++ fg ++ "\">"
-    right = "</span>"
-
-pangoSanitize :: String -> String
-pangoSanitize = foldr sanitize ""
-  where
-    sanitize '>'  xs = "&gt;" ++ xs
-    sanitize '<'  xs = "&lt;" ++ xs
-    sanitize '\"' xs = "&quot;" ++ xs
-    sanitize '&'  xs = "&amp;" ++ xs
-    sanitize x    xs = x:xs
---}
