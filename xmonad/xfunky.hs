@@ -69,8 +69,8 @@ import qualified DBus.Client              as D
 
 main = do
   replace
-  pipes <- spawnBars
   logpipe <- getDBusClient
+  _ <- spawnBars
   xmonad $ kde4Config
         { modMask            = modm
         , startupHook        = setWMName "LG3D" <+> startupHook kde4Config
@@ -405,6 +405,7 @@ swapMoveWindow w = whenX (isClient w) $ withDisplay $ \d -> do
 
 -- ====================================== Conky ========================================
 
+spawnBars :: IO [Int]
 spawnBars = do
   dsp <- openDisplay ""
   ss  <- xineramaQueryScreens dsp
@@ -412,7 +413,7 @@ spawnBars = do
   let
     applyToScreens = mapM (func . fromIntegral . xsi_screen_number)
     func sid = do
-      _ <- spawnPipe $ "$HOME/.xfunky/statusbar/bar.sh"
+      _ <- spawnPipe $ "sleep 1; $HOME/.xfunky/statusbar/bar.sh"
       return sid
   maybe (return []) applyToScreens ss
 
