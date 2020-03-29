@@ -6,7 +6,7 @@ echo '' >/dev/shm/xfunky_conky
 echo '' >/dev/shm/xfunky_dbus 
 
 function printBar() {
-    echo "$(</dev/shm/xfunky_conky) $(</dev/shm/xfunky_dbus)"
+    echo "$(</dev/shm/xfunky_conky) ^p(+100) $(</dev/shm/xfunky_dbus)"
 }
 
 function statusGen() {
@@ -18,14 +18,14 @@ function statusGen() {
 xpos=0
 ypos=0
 width=1400
-height=30
+height=20
 fgcolor="#f0f0f0"
 bgcolor="#0f0f0f"
 font="-*-fixed-medium-*-*-*-12-*-*-*-*-*-*-*"
 
-parameters=" -dock -x $xpos -y $ypos -w $width -h $height" 
+parameters=" -dock -x $xpos -y $ypos -h $height" 
 parameters+=" -fn $font"
-parameters+=" -ta c -bg $bgcolor -fg $fgcolor"
+parameters+=" -ta l -bg $bgcolor -fg $fgcolor"
 parameters+=" -title-name xfunky"
 
 pkill dzen2
