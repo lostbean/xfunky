@@ -14,13 +14,13 @@ conky.config = {
 font = "^fn(Monofur Nerd Font:size=12)"
 
 basic = [[${time %a %b %d %I:%M%P}]]
-cores = [[${loadavg 1}  ${freq_g}GHz ${lua cpuvbar cpu1} ${lua cpuvbar cpu2} ${lua cpuvbar cpu3} ${lua cpuvbar cpu4}]]
+cores = [[${loadavg 1}  ${freq_g}GHz ${lua cpuvbar cpu1}^p(5)${lua cpuvbar cpu2}^p(5)${lua cpuvbar cpu3}^p(5)${lua cpuvbar cpu4}]]
 men   = [[  ${lua h100bar memperc} 﫭 ${lua h100bar swapperc}]]
 disks = [[File system / ${fs_bar /}/home ${fs_bar /home}/data ${fs_bar /data}]]
-batt0 = [[${if_existing /sys/class/power_supply/BAT0/uevent}Battery ${battery BAT0}${endif}]]
-batt1 = [[${if_existing /sys/class/power_supply/BAT1/uevent}Battery ${battery BAT1}${endif}]]
-wifi  = [[${if_existing /proc/net/route wlp3s0} ^p(6)${wireless_essid wlp3s0} ${wireless_link_qual_perc wlp3s0}${endif}]]
-wifi2 = [[${if_existing /proc/net/route wlp3s0}total: ↑${totalup wlp3s0} ↓${totaldown wlp3s0} speed: ↑${upspeedf wlp3s0}KiB ↓${downspeedf wlp3s0}KiB ${endif}]]
+batt0 = [[${if_existing /sys/class/power_supply/BAT0/uevent}${battery BAT0}${endif}]]
+wifi    = [[${if_existing /proc/net/route wlp3s0} ^p(5)${wireless_essid wlp3s0}${endif}]]
+wifiBar = [[${if_existing /proc/net/route wlp3s0} ^p(4)${lua wirelessQualityBar wlp3s0}^p(5)${wireless_essid wlp3s0}${endif}]]
+wifiIO  = [[${if_existing /proc/net/route wlp3s0}total: ↑${totalup wlp3s0} ↓${totaldown wlp3s0} speed: ↑${upspeedf wlp3s0}KiB ↓${downspeedf wlp3s0}KiB ${endif}]]
 
 --conky.text = cpu .. cores .. men .. disks .. batt0 .. batt1 .. wifi
-conky.text = font .. cores .. "    " .. men .. "  " .. wifi .. " " .. basic
+conky.text = font .. cores .. "    " .. men .. " " .. wifi .. " | " .. batt0 .. ' | ' .. basic

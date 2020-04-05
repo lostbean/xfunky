@@ -19,9 +19,15 @@ function vbar(pct, fgcolor, bgcolor, x_dimension, y_dimension, maxpct)
   end
 
 function conky_cpuvbar(core)
-    return vbar(conky_parse ("${cpu " .. core .."}"), "white", "darkgrey", 8, 10, 100)
+    return vbar(conky_parse("${cpu " .. core .."}"), "white", "darkgrey", 5, 12, 100)
 end
 
 function conky_h100bar(metric)
-    return hbar(conky_parse ("${" .. metric .. "}"), "white", "darkgrey", 25, 10, 100)
+    return hbar(conky_parse("${" .. metric .. "}"), "white", "darkgrey", 25, 8, 100)
+end
+
+function conky_wirelessQualityBar(interface)
+  local cmd = "iwlist " .. interface .. " scan | grep Quality | grep -o '[-0-9]*' | xargs | awk '{ print $1/$2}'"
+  local quality = conky_parse('${exec ' .. cmd .. '}')
+  return vbar(quality, "white", "darkgrey", 5, 12, 1)
 end
