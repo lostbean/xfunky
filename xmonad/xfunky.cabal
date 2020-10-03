@@ -18,8 +18,9 @@ category:       X11
 author:         Edgar Gomes de Araujo
 
 Executable xfunky
-  main-is:       xfunky.hs
-  ghc-options:   -Wall -O2 -rtsopts
+  main-is:        xfunky.hs
+  hs-source-dirs: src
+  ghc-options:    -Wall -O2 -rtsopts
   build-depends: base           >= 3 && < 5
                , xmonad         >= 0.10
                , xmonad-contrib >= 0.10
