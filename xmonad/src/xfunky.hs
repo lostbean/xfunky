@@ -147,9 +147,9 @@ myManageHook = composeAll $
     centralFloats  = ["systemsettings5"]
     fullFloats     = []
     floats         = []
-    webApps        = ["firefox"]          -- open on desktop 1
-    codeApps       = ["code-oss", "kate"] -- open on desktop 2
-    gimpApps       = ["Gimp", "gimp"]     -- open on desktop 8
+    webApps        = ["firefox"]      -- open on desktop 1
+    codeApps       = ["code", "kate"] -- open on desktop 2
+    gimpApps       = ["Gimp", "gimp"] -- open on desktop 8
     kde            = ["plasma-desktop", "Plasma-desktop", "plasma", "Plasma", "krunner", "klipper"]
     ignoredApps    = []
 
@@ -229,7 +229,7 @@ myKeys conf = M.fromList $
     [
       -- Lauch applications
       ((modm                  , xK_a      ), spawn "firefox")
-    , ((modm                  , xK_z      ), spawn "code-oss")
+    , ((modm                  , xK_z      ), spawn "code")
     , ((modm .|. shiftMask    , xK_z      ), spawn "kate")
     , ((modm                  , xK_s      ), spawn "systemsettings5")
     , ((modm                  , xK_f      ), spawn "dolphin")
