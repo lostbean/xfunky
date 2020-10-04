@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/run/current-system/sw/bin/env nix-shell
+#!nix-shell -i bash -p lua -p conky -p dzen2 -p luaPackages.lgi
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
