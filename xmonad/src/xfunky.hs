@@ -413,7 +413,8 @@ spawnBars = do
   let
     applyToScreens = mapM (func . fromIntegral . xsi_screen_number)
     func sid = do
-      _ <- spawnPipe $ "sleep 1; $HOME/.xfunky/statusbar/bar.sh"
+      bar_pid <- spawnPipe $ "sleep 1; $HOME/.xfunky/statusbar/bar.sh"
+      putStrLn ("Starting statusbar process: " ++ show bar_pid)
       return sid
   maybe (return []) applyToScreens ss
 
