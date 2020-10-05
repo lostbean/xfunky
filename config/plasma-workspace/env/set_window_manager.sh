@@ -1,1 +1,1 @@
-export KDEWM=$HOME/.local/bin/xfunky
+export KDEWM=$HOME/.xfunky/start.sh
