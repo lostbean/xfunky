@@ -1,6 +1,6 @@
 name:           xfunky
 version:        0.0.1
-cabal-version:  >= 1.4
+cabal-version:  >= 1.8
 build-type:     Simple
 license:        GPL-3
 license-file:   LICENSE
@@ -18,8 +18,8 @@ category:       X11
 author:         Edgar Gomes de Araujo
 
 Executable xfunky
-  main-is:        xfunky.hs
-  hs-source-dirs: src
+  main-is:        xmonad.hs
+  hs-source-dirs: .
   ghc-options:    -Wall -O2 -rtsopts
   build-depends: base           >= 3 && < 5
                , xmonad         >= 0.10

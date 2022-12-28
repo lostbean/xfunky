@@ -67,6 +67,15 @@ import qualified Data.Map                 as M
 import qualified DBus                     as D
 import qualified DBus.Client              as D
 
+main2 = do
+  replace
+  logpipe <- getDBusClient
+  xmonad $ gnomeConfig
+        { modMask            = modm
+        , terminal           = "kitty"
+        , borderWidth        = 2
+        }
+
 main = do
   replace
   logpipe <- getDBusClient
@@ -87,7 +96,7 @@ main = do
         , focusFollowsMouse  = True
         , normalBorderColor  = "#556268"
         , focusedBorderColor = "#557824"
-        , terminal           = "konsole"
+        , terminal           = "kitty"
         , borderWidth        = 2
         }
 
@@ -210,7 +219,7 @@ addThemeButtons x = x {
      ]
   }
 
-decoTheme = defaultTheme
+decoTheme = def
   { activeColor         = "#90B460"
   , activeTextColor     = "#2E2E2E"
   , activeBorderColor   = "#90B460"
@@ -431,7 +440,7 @@ myPPLayout x
 
 myLogPPDBus :: ScreenId -> D.Client -> X ()
 myLogPPDBus (S currentSID) dbus = let
-  pp = defaultPP
+  pp = def
     { ppOutput   = dbusOutput dbus
     , ppTitle    = const ""
     , ppWsSep    = " | "
