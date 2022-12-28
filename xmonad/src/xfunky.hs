@@ -32,7 +32,7 @@ import           XMonad.Layout.Reflect
 import           XMonad.Layout.Tabbed
 import           XMonad.Layout.WindowSwitcherDecoration
 
-import           XMonad.Config.Kde
+import           XMonad.Config.Gnome
 
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
@@ -70,16 +70,16 @@ import qualified DBus.Client              as D
 main = do
   replace
   logpipe <- getDBusClient
-  xmonad $ kde4Config
+  xmonad $ gnomeConfig
         { modMask            = modm
-        , startupHook        = setWMName "LG3D" <+> startupHook kde4Config
-        , manageHook         = manageHook kde4Config <+> myManageHook
+        , startupHook        = setWMName "LG3D" <+> startupHook gnomeConfig
+        , manageHook         = manageHook gnomeConfig <+> myManageHook
         , layoutHook         = myLayoutHook
         , logHook            = myLogHook logpipe
-        , handleEventHook    = handleEventHook kde4Config <+>
-                               docksEventHook             <+>
-                               focusOnMouseMove           <+>
-                               minimizeEventHook          <+>
+        , handleEventHook    = handleEventHook gnomeConfig <+>
+                               docksEventHook              <+>
+                               focusOnMouseMove            <+>
+                               minimizeEventHook           <+>
                                fullscreenEventHook
         , workspaces         = myWorkspaces
         , keys               = myKeys
@@ -229,7 +229,7 @@ myKeys conf = M.fromList $
       -- Lauch applications
       ((modm                  , xK_a      ), spawn "firefox")
     , ((modm                  , xK_z      ), spawn "code")
-    , ((modm .|. shiftMask    , xK_z      ), spawn "kate")
+    , ((modm .|. shiftMask    , xK_z      ), spawn "kitty")
     , ((modm                  , xK_s      ), spawn "systemsettings5")
     , ((modm                  , xK_f      ), spawn "dolphin")
     , ((modm                  , xK_t      ), spawn $ XMonad.terminal conf)
